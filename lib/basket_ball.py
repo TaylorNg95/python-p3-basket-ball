@@ -182,3 +182,53 @@ def game_dict():
             ]
         }
     }
+
+def get_players():
+    return game_dict()['home']['players'] + game_dict()['away']['players']
+
+def num_points_per_game(name):
+    players = get_players()
+    selected_player = [player for player in players if name == player['name']][0]
+    return selected_player['points_per_game']
+
+def player_age(name):
+    players = get_players()
+    selected_player = [player for player in players if name == player['name']][0]
+    return selected_player['age']
+
+def team_colors(name):
+    color_combos = {game_dict()['home']['team_name']:game_dict()['home']['colors'], game_dict()['away']['team_name']:game_dict()['away']['colors']}
+    colors = color_combos[name]
+    return colors
+
+def team_names():
+    team_names = []
+    team_names.append(game_dict()['home']['team_name'])
+    team_names.append(game_dict()['away']['team_name'])
+    return team_names
+
+def player_numbers(name):
+    team_players = {game_dict()['home']['team_name']:game_dict()['home']['players'], game_dict()['away']['team_name']:game_dict()['away']['players']}
+    selected_team_players = team_players[name]
+    player_numbers = [player['number'] for player in selected_team_players]
+    return player_numbers
+
+def player_stats(name):
+    players = get_players()
+    return [player for player in players if name == player['name']][0]
+
+def average_rebounds_by_shoe_brand():
+    # make a players array
+    # for each player, if their brand is not in the list add it, otherwise skip
+    brand_dictionary = {}
+    players = get_players()
+    for player in players:
+        if player['shoe_brand'] not in brand_dictionary:
+            brand_dictionary.update({player['shoe_brand']: []})
+        brand_dictionary[player['shoe_brand']].append(player['rebounds_per_game'])
+    
+    new_dictionary = {}
+    for brand, values in brand_dictionary.items():
+        new_dictionary.update({brand: f'{sum(values)/len(values):.2f}'})
+    joined_items = '\n'.join(f'{key}:  {value}' for key, value in new_dictionary.items())
+    print(joined_items)
